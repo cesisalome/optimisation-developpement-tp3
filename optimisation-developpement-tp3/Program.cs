@@ -1,18 +1,65 @@
-﻿namespace optimisation_developpement_tp3
+﻿using System.Diagnostics;
+
+namespace optimisation_developpement_tp3
 {
     public class Program
     {
         public static void Main()
         {
-            BubbleSort();
-            MergeSort();
+            var sizes = new List<int> { 100, 1000, 10000 };
+            var rnd = new Random();
+
+            foreach (var size in sizes)
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine($"Size: {size}");
+
+                var original = GenerateRandomList(size, rnd);
+
+                // Préparer copies pour chaque algorithme
+                var listForBubble = new List<int>(original);
+                var listForMerge = new List<int>(original);
+
+                // BubbleSort (tri en place) - mesurer le temps
+                var sw = Stopwatch.StartNew();
+                BubbleSort(listForBubble);
+                sw.Stop();
+                Console.WriteLine();
+                Console.WriteLine($"BubbleSort durée : {sw.ElapsedMilliseconds} ms");
+                Console.WriteLine($"BubbleSort aperçu : {Preview(listForBubble)}");
+
+                // MergeSort - mesurer le temps
+                sw.Restart();
+                MergeSort(listForMerge);
+                sw.Stop();
+                Console.WriteLine();
+                Console.WriteLine($"MergeSort durée : {sw.ElapsedMilliseconds} ms");
+                Console.WriteLine($"MergeSort aperçu : {Preview(listForMerge)}");
+            }
         }
 
-        private static void BubbleSort()
+        private static List<int> GenerateRandomList(int count, Random rnd)
         {
-            // Example list to sort
-            var list = new List<int> { 8, 2, 9, 4, 1 };
+            var list = new List<int>(count);
 
+            for (var i = 0; i < count; i++)
+            {
+                list.Add(rnd.Next(100000));
+            }
+
+            return list;
+        }
+
+        private static string Preview(List<int> list, int maxItems = 20)
+        {
+            if (list == null || list.Count == 0) return "<vide>";
+            var take = Math.Min(maxItems, list.Count);
+            return string.Join(", ", list.Take(take)) + (list.Count > take ? ", ..." : "");
+        }
+
+        private static void BubbleSort(List<int> list)
+        {
             // Bubble Sort Algorithm
             for (var i = 0; i < list.Count - 1; i++)
             {
@@ -26,19 +73,16 @@
                     }
                 }
             }
-
-            Console.WriteLine("BubbleSort: " + string.Join(", ", list));
         }
 
-        private static void MergeSort()
+        private static void MergeSort(List<int> list)
         {
-            // Example list to sort
-            var list = new List<int> { 37, 12, 5, 21, 6, 19, 4 };
-
             // Merge Sort Algorithm
             var sortedList = MergeSortRecursive(list);
 
-            Console.WriteLine("MergeSort: " + string.Join(", ", sortedList));
+            // Copy back to original list
+            list.Clear();
+            list.AddRange(sortedlist);
         }
 
         private static List<int> MergeSortRecursive(List<int> list)
