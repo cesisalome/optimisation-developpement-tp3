@@ -82,7 +82,7 @@ namespace optimisation_developpement_tp3
 
             // Copy back to original list
             list.Clear();
-            list.AddRange(sortedlist);
+            list.AddRange(sortedList);
         }
 
         private static List<int> MergeSortRecursive(List<int> list)
